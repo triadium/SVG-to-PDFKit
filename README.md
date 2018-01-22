@@ -7,21 +7,11 @@ Insert SVG into a PDF document created with PDFKit.
 
 ## Use
 
-    SVGtoPDF(doc, svg, x, y, options);
+    let doc = SVGtoPDF(svg, x, y, options);
 
-&nbsp; &nbsp; If you prefer, you can add the function to the PDFDocument prototype:
-
-    PDFDocument.prototype.addSVG = function(svg, x, y, options) {
-      return SVGtoPDF(this, svg, x, y, options), this;
-    };
-
-&nbsp; &nbsp; And then simply call:
-
-    doc.addSVG(svg, x, y, options);
 
 ## Parameters
 
-    doc [PDFDocument] = the PDF document created with PDFKit
     svg [SVGElement or string] = the SVG object or XML code
     x, y [number] = the position where the SVG will be added
     options [Object] = >
@@ -35,14 +25,7 @@ Insert SVG into a PDF document created with PDFKit.
       - warningCallback [function] = function called when there is a warning
       - assumePt [boolean] = assume that units are PDF points instead of SVG pixels
       - precision [number] = precision factor for approximative calculations (default = 3)
-
-## Demos
-&nbsp; &nbsp; <a href="https://alafr.github.io/SVG-to-PDFKit/examples/demo.htm" target="_blank">https://alafr.github.io/SVG-to-PDFKit/examples/demo.htm</a>
-
-&nbsp; &nbsp; <a href="https://alafr.github.io/SVG-to-PDFKit/examples/options.htm" target="_blank">https://alafr.github.io/SVG-to-PDFKit/examples/options.htm</a>
-
-## NodeJS example
-&nbsp; &nbsp; <a href="https://runkit.com/alafr/5a1377ff160182001232a91d" target="_blank">https://runkit.com/alafr/5a1377ff160182001232a91d</a>
+      
 
 ## Supported
  - shapes: rect, circle, path, ellipse, line, polyline, polygon

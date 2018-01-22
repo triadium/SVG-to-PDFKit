@@ -1,5 +1,7 @@
-var SVGtoPDF = function(doc, svg, x, y, options) {
+var SVGtoPDF = function(svg, x, y, options) {
     "use strict";
+
+    const PDFDocument = require("pdfkit");
 
     const NamedColors = {aliceblue: [240,248,255], antiquewhite: [250,235,215], aqua: [0,255,255], aquamarine: [127,255,212], azure: [240,255,255], beige: [245,245,220], bisque: [255,228,196], black: [0,0,0], blanchedalmond: [255,235,205], blue: [0,0,255], blueviolet: [138,43,226], brown: [165,42,42], burlywood: [222,184,135], cadetblue: [95,158,160], chartreuse: [127,255,0],
       chocolate: [210,105,30], coral: [255,127,80], cornflowerblue: [100,149,237], cornsilk: [255,248,220], crimson: [220,20,60], cyan: [0,255,255], darkblue: [0,0,139], darkcyan: [0,139,139], darkgoldenrod: [184,134,11], darkgray: [169,169,169], darkgrey: [169,169,169], darkgreen: [0,100,0], darkkhaki: [189,183,107], darkmagenta: [139,0,139], darkolivegreen: [85,107,47],
@@ -2399,9 +2401,11 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
     };
 
     options = options || {};
+    x = x || 0;
+    y = y || 0;
     var pxToPt = options.assumePt ? 1 : (72/96), // 1px = 72/96pt, but only if assumePt is false
-        viewportWidth = (options.width || doc.page.width) / pxToPt,
-        viewportHeight = (options.height || doc.page.height) / pxToPt,
+        viewportWidth = (options.width || 1) / pxToPt,
+        viewportHeight = (options.height || 1) / pxToPt,
         preserveAspectRatio = options.preserveAspectRatio || null, // default to null so that the attr can override if not passed
         useCSS = options.useCSS && typeof SVGElement !== 'undefined' && svg instanceof SVGElement && typeof getComputedStyle === 'function',
         warningCallback = options.warningCallback,
@@ -2472,12 +2476,18 @@ var SVGtoPDF = function(doc, svg, x, y, options) {
         if (options.useCSS && !useCSS) {
           warningCallback('SVGtoPDF: useCSS option can only be used for SVG *elements* in compatible browsers');
         }
-        doc.save().translate(x || 0, y || 0).scale(pxToPt);
+
+        var doc = new PDFDocument({margins:{top:0, left: 0, bottom: 0, right: 0}, size:[(elem.getVWidth() + 2 * x) * pxToPt, (elem.getVHeight() + 2 * y) * pxToPt]});
+
+        doc.save().translate(x * pxToPt, y * pxToPt).scale(pxToPt);
         elem.drawInDocument();
         for (let i = 0; i < links.length; i++) {
           doc.page.annotations.push(links[i]);
         }
         doc.restore();
+
+        return doc;
+
       } else {
         warningCallback('SVGtoPDF: this element can\'t be rendered directly: ' + svg.nodeName);
       }
